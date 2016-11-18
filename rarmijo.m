@@ -1,4 +1,4 @@
-function t=rarmijo(fct, fk, gk, dk, xk)
+function [t, iter]=rarmijo(fct, fk, gk, dk, xk)
 tau=0.5;
 sigma=0.001;
 t=1;
