@@ -75,8 +75,8 @@ while(norm(gK) > eps && k<itr)
 %En fait la fonction utilisée a le rôle de factoriser une matrice, mais sa sortie optionnel donne directement la définition de la
 %matrice comme définie positive dans le cas où le paramètre optionnel p est nul. Comme dit avant, c'est très coûteux.
 %
-        [R, p] = chol(H); 
-	if (p == 0) 
+       % [R, p] = chol(H); 
+	if (all(eig(H)>0)) 
 %dk -> variable pour enregistrer le gradient de la fonction approché pour le Hessien
 %On actualise la valeur de dK si et seulement si on a une matrice définie positive
 		dK = -1* H * gK; 
