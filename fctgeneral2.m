@@ -4,19 +4,14 @@ function [f,g]=fctgeneral2(x)
     
     f = 0.00001*(sum((x-1).^2))  + (norm(x)^2 - 0.25)^2;  
       
-        if(nargout==1)
-	        return;
-        end
-        g=zeros(n,1);
-	
-    
+    if(nargout==1)
+       return;
+    end
+    g=zeros(n,1);
+	 
 
       
-       common_term = 4*norm(x)^2 - 0.99998 ;
-       g = x * common_term - 0.00002;
+    common_term = 4*norm(x)^2 - 0.99998 ;
+    g = x * common_term - 0.00002; %optization
       
-    
-	%for i=1:n
-        %(i)= x(i)*common_term - 0.00002;
-       
-  %  end
+   
