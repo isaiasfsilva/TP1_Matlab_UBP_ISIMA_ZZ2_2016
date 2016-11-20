@@ -56,63 +56,95 @@ end
 [F,gK]=feval(fct,xK);
 %Initialisation de la matrice pour sauvegarder l'approximation de l'inverse du Hessien utilisé pendant l'exécution du méthode BFGS
 H=eye(n);
-%Variable 
+%Variable pour enregistrer le retourn de la recherche linéaire.
 t=0;
+%Variable pour contrôler le nombre d'évaluations
 iterations = 1 ;
+%L'algorithme pour le méthode BFGS
+%Tandis que le norme du gradient de la fonction est supérieur a la tolerance et le nombre d'iterations est inférieur au maximum
+%l'algorithme est exécutée.
+%
 while(norm(gK) > eps && k<itr)
+%Vérification de la contrainte d'évaluations. Il est interdit d'avoir plus évaluations que 5 fois le nombre d'itérations
 	if(iterations> 5 * itr)
-                fprintf('#Numero d"evaluations plus grand que 5 fois le numéro maximum d"iterations\n#            ABORTING          \n\n');
+                fprintf('\t ÉCHEC! NOMBRE D EVALUATIONS SUPERIEUR AU PERMIS\n #Il y a plus évaluations que 5 fois le nombre maximum d itérations\n#            ABORTING          \n\n');
                 return;
-        end
-        [R, p] = chol(H); % Complexite O(n^3) - Pas bonne :/
-	if (p == 0) % H est définie positive
-		dK = -1* H * gK; %Dérivative
-	end %if 
-	
-	[t, armijo_iter]=rarmijo(fct,F,gK,dK,xK); %Recherche linear avec Armijo méthod
-	
+        end %if contrôle d'évaluations
+%
+%Vérification de la matrice H comme définie positive. Si p == 0 alors la matrice est définie positive. 
+%En fait la fonction utilisée a le rôle de factoriser une matrice, mais sa sortie optionnel donne directement la définition de la
+%matrice comme définie positive dans le cas où le paramètre optionnel p est nul. Comme dit avant, c'est très coûteux.
+%
+        [R, p] = chol(H); 
+	if (p == 0) 
+%dk -> variable pour enregistrer le gradient de la fonction approché pour le Hessien
+%On actualise la valeur de dK si et seulement si on a une matrice définie positive
+		dK = -1* H * gK; 
+	end %if vérification d'être definie positive et d'actualisation de la dérivée
+%Appel à fonction que décrire la règle d'Armijo pour la recherche linéaire et donne la valeur du terme pour améliorer la solution	
+	[t, armijo_iter]=rarmijo(fct,F,gK,dK,xK);
+%Les sorties sont le terme de la recherche linéaire (t) et le nombre d'évaluations faites pendant l'exécution de la fonction
+%
+%Vérification de la performance de la recherche linéaire. Si le nombre d'iterations dans la recherche linéaire est supérieur a
+%100 alors la recherche est mal passée. Alors il faut finir l'algorithme a cause de n'avoir pas comme obtenir une solution faisable
 	if(armijo_iter==100)
-	        fprintf('#Recherche linéaire est mal passé. Désolé. \n\n');
+	        fprintf('\t ÉCHEC! NOMBRE D ITÉRATIONS DANS LA RECHERCHE LINÉAIRE SUPERIEUR AU PERMIS\n #Recherche linéaire est mal passée.\n\n');
                 return;
-	end
-	
-	xK=xK+t*dK; %Calcul of X
-	%Évaluation de la fonction et de son gradient pour le prochain vecteur xK
+	end % if de vérification de la performance de la recherche linéaire
+%
+%Calcul du nouveau vecteur solution par rapport a la recherche linéaire et le gradient de la fonction sur la solution actuelle
+	xK=xK+t*dK;
+%Évaluation de la fonction et de son gradient pour le nouveau vecteur xK
 	[F,gNextK]=feval(fct,xK); 
-	
-	deltK=t*dK; %ok
-	
-	gamK=gNextK - gK; % OK
-
-	if(all(gamK~=0) && all(deltK~=0)) % Logical and
+%
+%Calcul des paramètres pour la définition du Hessien.
+%Différence entre la nouvelle solution et la solution actuelle
+	deltK=t*dK; 
+%Différence entre les gradients de la nouvelle solution et de la solution actuelle
+	gamK=gNextK - gK;
+%
+%Calcul du Hessien approché sur la contrainte que les solutions sont différents. C'est à dire, on peut améliorer la solution
+%en recherchant la solution optimale
+%Le calcul du Hessien est donné pour une formule obtenue dans toutes les documents que traitent du méthode BFGS
+	if(all(gamK~=0) && all(deltK~=0))
 		H = H - (1/(deltK'*gamK))*(deltK*gamK'*H + H*gamK*deltK') + (1 + (gamK'*H*gamK)/(deltK'*gamK)) * ((deltK*deltK')/(deltK' * gamK));
-	end %if
-	
+	end %if calcul du Hessien pour nouvelles solutions
+%Vérification des specifications d'affichage pour la première itération dans le cas du paramètre iprint égal a 1
+%Si l'algorithme est dans la première itération et comme il y a besoin d'affichage des valeurs du gradient et de la solution
+% alors cettes valeurs sont affichées
 	if(k==0 && iprint==1)
-	     fprintf('\n\n#### Value de Gradient (gK) et X temporaire ####\n#          Premier Iteration          #\n#####################################\n');
+	     fprintf('\n\n#### Value de Gradient (gK) et X  ####\n#          Premier Iteration          #\n#####################################\n');
 	     gK
 	     xK	     
-        end
-        
+        end  %fin de la vérification du paramètre d'affichage iprint == 1
+%
+%Vérification des specifications d'affichage pour la itération courante dans le cas du paramètre iprint égal a 2
+%Comme il y a besoin d'affichage des valeurs du gradient et de la solution alors cettes valeurs sont affichées        
 	if(iprint==2)
-	     fprintf('\n\n#### Value de Gradient (gK) et X temporaire ####\n#            Iteration %d          #\n#####################################\n',k);
+	     fprintf('\n\n#### Value de Gradient (gK) et X  ####\n#            Iteration %d          #\n#####################################\n',k);
 	     gK 
 	     xK	     
-        end
+        end  %fin de la vérification du paramètre d'affichage iprint == 2
+%
+%Calcul du nombre d'évaluations de la fonction et de son gradient
         iterations = iterations + armijo_iter+1;
-        
-        %Vérifie si le numéro d'iterations est plus grand que 5 fois le numéro maximum d'iterations.
-        
-	k=k+1; %OK
+%Augmentation dans le compteur d'itérations
+	k=k+1;
+%Attribution du gradient de la nouvelle solution a la variable correct car gNext est une variable temporaire
 	gK=gNextK;
-end
+end %fin du boucle while
 
-
+%Vérification des specifications d'affichage pour la dernière itération dans le cas du paramètre iprint égal a 1
+%Comme l'algorithme est dans la dernière itération et comme il y a besoin d'affichage des valeurs du gradient et de la solution
+% alors cettes valeurs sont affichées  
 if(iprint==1)
-	   fprintf('\n\n#### Value de Gradient (gK) et X temporaire ####\n#           Dérniére Iteration          #\n#####################################\n');
+	   fprintf('\n\n#### Value de Gradient (gK) et X  ####\n#           Dérniére Iteration          #\n#####################################\n');
 	   gK
 	   xK
 	     
-end
+end %fin de la vérification du paramètre d'affichage iprint == 1
+%
+%
+end % fin de la fonction
         
         
