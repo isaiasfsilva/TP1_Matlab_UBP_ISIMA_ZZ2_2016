@@ -49,7 +49,7 @@ if(n > 100)
 end
 %Vérification de la commande d'affichage. Si le nombre de arguments est 4, il n'a aucune besoin d'afficher les valeurs lorsque
 %l'algorithme est exécutée. Alors, l'attribut iprint reçoit la valeur par défaut.
-if(nargin == 3)
+if(nargin == 4)
         iprint = 0;
 end
 %Évaluation de la fonction et de son gradient
@@ -71,11 +71,11 @@ while(norm(gK) > eps && k<itr)
                 return;
         end %if contrôle d'évaluations
 %
-%Vérification de la matrice H comme définie positive. Si p == 0 alors la matrice est définie positive. 
-%En fait la fonction utilisée a le rôle de factoriser une matrice, mais sa sortie optionnel donne directement la définition de la
-%matrice comme définie positive dans le cas où le paramètre optionnel p est nul. Comme dit avant, c'est très coûteux.
+%Vérification de la matrice H comme définie positive. Si toutes les auto-valeurs de la matrice sont positives alors la matrice
+%est définie positive. En fait la fonction 'eig' utilisée a le rôle de générer les auto-valeurs de la matrice passé comme argument.
+%La fonction 'all' vérifie quelque relation logique pour touts les éléments de la matrice passé comme argument. Dans ce cas il y a
+%la vérification de la matrice être definie positive est si toutes ses valeurs sont positives.
 %
-       % [R, p] = chol(H); 
 	if (all(eig(H)>0)) 
 %dk -> variable pour enregistrer le gradient de la fonction approché pour le Hessien
 %On actualise la valeur de dK si et seulement si on a une matrice définie positive
