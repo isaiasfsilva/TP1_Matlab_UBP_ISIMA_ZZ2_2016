@@ -43,7 +43,7 @@ k=0;
 n=length(xK);
 %Vérification de la taille du vecteur passé comme paramètre. Il faut qu'elle soit au plus 100, sinon, il est interdit exécuter 
 if(n > 100)
-   error('\n#\t ÉCHEC! TAILLE DE X PLUS GRAND QUE 100\n#\t Il faut que la taille du vecteur X soit au plus 100! \n#\n'); 
+   error('ÉCHEC! TAILLE DE X PLUS GRAND QUE 100 - Il faut que la taille du vecteur X soit au plus 100!'); 
   % xK=0; F=0; k=0; // acredito que apenas imprime a mensagem de erro, a gente não tem que alterar o valor do x e etc
    return;
 end
@@ -67,7 +67,7 @@ iterations = 1 ;
 while(norm(gK) > eps && k<itr)
 %Vérification de la contrainte d'évaluations. Il est interdit d'avoir plus évaluations que 5 fois le nombre d'itérations
 	if(iterations> 5 * itr)
-                error('\t ÉCHEC! NOMBRE D EVALUATIONS SUPERIEUR AU PERMIS\n #Il y a plus évaluations que 5 fois le nombre maximum d itérations\n#            ABORTING          \n\n');
+                error('ÉCHEC! NOMBRE D EVALUATIONS SUPERIEUR AU PERMIS - Il y a plus évaluations que 5 fois le nombre maximum d itérations         ABORTING        ');
                 return;
         end %if contrôle d'évaluations
 %
@@ -88,7 +88,7 @@ while(norm(gK) > eps && k<itr)
 %Vérification de la performance de la recherche linéaire. Si le nombre d'iterations dans la recherche linéaire est supérieur a
 %100 alors la recherche est mal passée. Alors il faut finir l'algorithme a cause de n'avoir pas comme obtenir une solution faisable
 	if(armijo_iter==100)
-	        error('\t ÉCHEC! NOMBRE D ITÉRATIONS DANS LA RECHERCHE LINÉAIRE SUPERIEUR AU PERMIS\n #Recherche linéaire est mal passée.\n\n');
+	        error('ÉCHEC! NOMBRE D ITÉRATIONS DANS LA RECHERCHE LINÉAIRE SUPERIEUR AU PERMIS - Recherche linéaire est mal passée.');
                 return;
 	end % if de vérification de la performance de la recherche linéaire
 %
