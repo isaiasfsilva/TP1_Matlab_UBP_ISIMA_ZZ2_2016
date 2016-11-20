@@ -24,6 +24,17 @@ function [xK,F,k]=bfgs(fct, xK,eps, itr, iprint)
 %F	valeur de la fonction en xK
 %k	nombre d'itérations exécutées
 %
+%QUELQUES EXAMPLES
+%[xout, f,k] = bfgs(@fctgeneral,ones(40,1),0.00000001,500,0)
+%
+%[xout, f,k] = bfgs(@fctgeneral2,[1:90]',0.00001,500,0)
+%
+%[xout, f,k] = bfgs(@fctgeneral2,[1:10]',0.00001,500,0)
+%
+%[xout, f,k] = bfgs(@fct,[0,0]',0.00001, 500,0)
+%
+%[xout, f,k] = bfgs(@fct2,[(7/6)^0.5,0]',0.00001, 500,0)
+%
 %INFORMATIONS ADDITIONNELS
 %Cette fonction permet le traitement pour matrices dont la taille maximum est fixée à 100. Le contrôle de performance du méthode
 %est fait pour le contrôle de la norme du gradient par rapport a une tolerance passée comme paramètre et du nombre d'itérations.
@@ -73,14 +84,15 @@ while(norm(gK) > eps && k<itr)
 %
 %Vérification de la matrice H comme définie positive. Si toutes les auto-valeurs de la matrice sont positives alors la matrice
 %est définie positive. En fait la fonction 'eig' utilisée a le rôle de générer les auto-valeurs de la matrice passé comme argument.
-%La fonction 'all' vérifie quelque relation logique pour touts les éléments de la matrice passé comme argument. Dans ce cas il y a
-%la vérification de la matrice être definie positive est si toutes ses valeurs sont positives.
+%La fonction 'all' vérifie quelque relation logique pour touts les éléments de la matrice passée comme argument. Dans ce cas il y a
+%la vérification de la matrice comme definie positive, c'est à dire si toutes ses valeurs sont positives.
 %
 	if (all(eig(H)>0)) 
 %dk -> variable pour enregistrer le gradient de la fonction approché pour le Hessien
 %On actualise la valeur de dK si et seulement si on a une matrice définie positive
 		dK = -1* H * gK; 
 	end %if vérification d'être definie positive et d'actualisation de la dérivée
+%
 %Appel à fonction que décrire la règle d'Armijo pour la recherche linéaire et donne la valeur du terme pour améliorer la solution	
 	[t, armijo_iter]=rarmijo(fct,F,gK,dK,xK);
 %Les sorties sont le terme de la recherche linéaire (t) et le nombre d'évaluations faites pendant l'exécution de la fonction
