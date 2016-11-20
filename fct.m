@@ -1,5 +1,5 @@
 function [f,g]=fct(x)
-	f = 100*(x(2) - x(1)^2)^2 + (1-x(1))^2	
+	f = 100*(x(2) - x(1)^2)^2 + (1-x(1))^2	;
 	if(nargout==1)
 		return;
 	end
