@@ -13,7 +13,7 @@ function [f,g]=fctgeneral2(x)
 
       
       common_term = 4*norm(x)^2 - 0.99998 ;
-      g = common_term * x - 0.00002
+      g = common_term * x - 0.00002;
       
     
 	%for i=1:n
