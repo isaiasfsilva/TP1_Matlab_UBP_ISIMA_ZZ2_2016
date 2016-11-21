@@ -119,7 +119,7 @@ while(norm(gK) > eps && k<itr)
 
 %Verifier si est possible calculer le matrisse H
 	if((deltK'*gamK)<=0)            
-	   disp('ÉCHEC! PAS POSSIBLE CALCULER H.')
+	   disp('ÉCHEC! PAS POSSIBLE CALCULER H.      ABORTING       ')
            return 
 	end %if calcul du Hessien pour nouvelles solutions
 %Calcul du Hessien approché sur la contrainte que les solutions sont différents. C'est à dire, on peut améliorer la solution
