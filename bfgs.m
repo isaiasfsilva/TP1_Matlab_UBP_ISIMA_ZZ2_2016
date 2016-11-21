@@ -169,6 +169,6 @@ if(iprint==1)
 end %fin de la vérification du paramètre d'affichage iprint == 1
 %
 %
-end; % fin de la fonction
+end % fin de la fonction
         
         
