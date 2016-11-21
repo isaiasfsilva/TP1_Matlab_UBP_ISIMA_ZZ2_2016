@@ -27,5 +27,6 @@ disp('X0 = [1, 1, 1, ... ,1 ,1 ,1 ] %taille 40')
 disp('>> Exemple pour montrer la Robustesse 2: ')
 disp('X0 = [1, 2, 3, ... ,n-1 ,n ] %n=90')
 [xout, f,k] = bfgs(@fctgeneral2,[1:90]',0.00001,500,0)
+fprintf('Verification de l eficace: norm(xout)^2 = %f\n\n',norm(xout)^2)
 
 disp('Fin du script pour tester l efficace du methode implementé')
