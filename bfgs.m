@@ -88,6 +88,7 @@ while(norm(gK) > eps && k<itr)
 %
         [R, p] = chol(H); 
 	if (p ~= 0) 
+
 %On actualise la valeur de dK si et seulement si on a une matrice définie positive
         error('ÉCHEC! LA MATRICE N EST PAS DEFINIE POSITIVE. IL FAUT ARRETER L EXECUTION.    ABORTING     ')		 
 	end %if vérification d'être definie positive et d'actualisation de la dérivée
@@ -97,7 +98,7 @@ while(norm(gK) > eps && k<itr)
 %Appel à fonction que décrire la règle d'Armijo pour la recherche linéaire et donne la valeur du terme pour améliorer la solution	
 	[t, armijo_iter]=rarmijo(fct,F,gK,dK,xK);
 %Les sorties sont le terme de la recherche linéaire (t) et le nombre d'évaluations faites pendant l'exécution de la fonction
-%On a des pas pour approcher la solution x de la solution optimale
+%
 %Vérification de la performance de la recherche linéaire. Si le nombre d'iterations dans la recherche linéaire est supérieur a
 %100 alors la recherche est mal passée. Alors il faut finir l'algorithme a cause de n'avoir pas comme obtenir une solution faisable
 	if(armijo_iter==100)
@@ -119,12 +120,13 @@ while(norm(gK) > eps && k<itr)
 %Calcul du Hessien approché sur la contrainte que les solutions sont différents. C'est à dire, on peut améliorer la solution
 %en recherchant la solution optimale
 %Le calcul du Hessien est donné pour une formule obtenue dans toutes les documents que traitent du méthode BFGS
-%La condition pour calculer H est que le produit de deltk par gamk est strictement positif
-	if((deltK'*gamK<=0))
-	        error('ÉCHEC! LA MATRIZ NE PEUT ETRE CALCULEE. IL Y A EU UNE DIVISION PAR ZERO.       ABORTING      ');
+	if((deltK'*gamK)>0)
+	        %error('ÉCHEC! LA MATRIX NE PEUT ETRE CALCULEE. IL Y A EU UNE DIVISION PAR ZERO.       ABORTING      ');
+                H = H - (1/(deltK'*gamK))*(deltK*gamK'*H + H*gamK*deltK') + (1 + (gamK'*H*gamK)/(deltK'*gamK)) * ((deltK*deltK')/(deltK' * gamK));
 	end %if calcul du Hessien pour nouvelles solutions
-	H = H - (1/(deltK'*gamK))*(deltK*gamK'*H + H*gamK*deltK') + (1 + (gamK'*H*gamK)/(deltK'*gamK)) * ((deltK*deltK')/(deltK' * gamK));
-%
+	
+	
+
 %Vérification des specifications d'affichage pour la première itération dans le cas du paramètre iprint égal a 1
 %Si l'algorithme est dans la première itération et comme il y a besoin d'affichage des valeurs du gradient et de la solution
 % alors cettes valeurs sont affichées
