@@ -116,21 +116,22 @@ while(norm(gK) > eps && k<itr)
 	deltK=t*dK; 
 %Différence entre les gradients de la nouvelle solution et de la solution actuelle
 	gamK=gNextK - gK;
-%
+
+%Verifier si est possible calculer le matrisse H
+	if((deltK'*gamK)<=0)            
+	   disp('ÉCHEC! PAS POSSIBLE CALCULER H.')
+           return 
+	end %if calcul du Hessien pour nouvelles solutions
 %Calcul du Hessien approché sur la contrainte que les solutions sont différents. C'est à dire, on peut améliorer la solution
 %en recherchant la solution optimale
-%
 %Le calcul du Hessien est donné pour une formule obtenue dans toutes les documents que traitent du méthode BFGS
-	if((deltK'*gamK)>0)
-	        %error('ÉCHEC! LA MATRIX NE PEUT ETRE CALCULEE. IL Y A EU UNE DIVISION PAR ZERO.       ABORTING      ');
-                H = H - (1/(deltK'*gamK))*(deltK*gamK'*H + H*gamK*deltK') + (1 + (gamK'*H*gamK)/(deltK'*gamK)) * ((deltK*deltK')/(deltK' * gamK));
-	end %if calcul du Hessien pour nouvelles solutions
-%Pour mantenir la cohésion avec le mèthode BFGS on doit assurer que la construction du Hessien est faite dans le limit de la
-%la taille du vecteur. Si le nombre d'itêrations est supérieur à la taille du vecteur x, alors il faut reinitialiser
+	H = H - (1/(deltK'*gamK))*(deltK*gamK'*H + H*gamK*deltK') + (1 + (gamK'*H*gamK)/(deltK'*gamK)) * ((deltK*deltK')/(deltK' * gamK));
 %
+%Updqte course 21/11/16
 	if(mod(k,n)==0)
 	        H=eye(n);
 	end
+%	
 %
 %Vérification des specifications d'affichage pour la première itération dans le cas du paramètre iprint égal a 1
 %Si l'algorithme est dans la première itération et comme il y a besoin d'affichage des valeurs du gradient et de la solution
