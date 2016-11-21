@@ -82,16 +82,18 @@ while(norm(gK) > eps && k<itr)
                 return;
         end %if contrôle d'évaluations
 %
-%Vérification de la matrice H comme définie positive. Si toutes les auto-valeurs de la matrice sont positives alors la matrice
-%est définie positive. En fait la fonction 'eig' utilisée a le rôle de générer les auto-valeurs de la matrice passé comme argument.
-%La fonction 'all' vérifie quelque relation logique pour touts les éléments de la matrice passée comme argument. Dans ce cas il y a
-%la vérification de la matrice comme definie positive, c'est à dire si toutes ses valeurs sont positives.
+%Vérification de la matrice H comme définie positive. Si p == 0 alors la matrice est définie positive. 
+%En fait la fonction utilisée a le rôle de factoriser une matrice, mais sa sortie optionnel donne directement la définition de la
+%matrice comme définie positive dans le cas où le paramètre optionnel p est nul. Comme dit avant, c'est très coûteux.
 %
-	if (all(eig(H)>0)) 
-%dk -> variable pour enregistrer le gradient de la fonction approché pour le Hessien
+        [R, p] = chol(H); 
+	if (p ~= 0) 
+
 %On actualise la valeur de dK si et seulement si on a une matrice définie positive
-		dK = -1* H * gK; 
+        error('ÉCHEC! LA MATRICE N EST PAS DEFINIE POSITIVE. IL FAUT ARRETER L EXECUTION.    ABORTING     ')		 
 	end %if vérification d'être definie positive et d'actualisation de la dérivée
+%dk -> variable pour enregistrer le gradient de la fonction approché pour le Hessien
+       dK = -1* H * gK;
 %
 %Appel à fonction que décrire la règle d'Armijo pour la recherche linéaire et donne la valeur du terme pour améliorer la solution	
 	[t, armijo_iter]=rarmijo(fct,F,gK,dK,xK);
@@ -118,9 +120,12 @@ while(norm(gK) > eps && k<itr)
 %Calcul du Hessien approché sur la contrainte que les solutions sont différents. C'est à dire, on peut améliorer la solution
 %en recherchant la solution optimale
 %Le calcul du Hessien est donné pour une formule obtenue dans toutes les documents que traitent du méthode BFGS
-	if(all(gamK~=0) && all(deltK~=0))
-		H = H - (1/(deltK'*gamK))*(deltK*gamK'*H + H*gamK*deltK') + (1 + (gamK'*H*gamK)/(deltK'*gamK)) * ((deltK*deltK')/(deltK' * gamK));
+	if((deltK'*gamK<=0))
+	        error('ÉCHEC! LA MATRIZ NE PEUT ETRE CALCULEE. IL Y A EU UNE DIVISION PAR ZERO.       ABORTING      ');
+
 	end %if calcul du Hessien pour nouvelles solutions
+	H = H - (1/(deltK'*gamK))*(deltK*gamK'*H + H*gamK*deltK') + (1 + (gamK'*H*gamK)/(deltK'*gamK)) * ((deltK*deltK')/(deltK' * gamK));
+
 %Vérification des specifications d'affichage pour la première itération dans le cas du paramètre iprint égal a 1
 %Si l'algorithme est dans la première itération et comme il y a besoin d'affichage des valeurs du gradient et de la solution
 % alors cettes valeurs sont affichées
