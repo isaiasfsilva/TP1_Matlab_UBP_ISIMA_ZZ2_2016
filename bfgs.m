@@ -125,7 +125,9 @@ while(norm(gK) > eps && k<itr)
                 H = H - (1/(deltK'*gamK))*(deltK*gamK'*H + H*gamK*deltK') + (1 + (gamK'*H*gamK)/(deltK'*gamK)) * ((deltK*deltK')/(deltK' * gamK));
 	end %if calcul du Hessien pour nouvelles solutions
 	
-	
+	if(mod(k,n)==0)
+	        H=eye(n);
+	end
 
 %Vérification des specifications d'affichage pour la première itération dans le cas du paramètre iprint égal a 1
 %Si l'algorithme est dans la première itération et comme il y a besoin d'affichage des valeurs du gradient et de la solution
