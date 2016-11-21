@@ -3,11 +3,11 @@ function [xK,F,k]=bfgs(fct, xK,eps, itr, iprint)
 %SINTAXE:
 %[xK,F,k]=bfgs(myfct, xK,eps, itr, iprint)
 %
-%La fonction reçois comme parâmetres le système a résoudre, le x initial et la tolérance.Retourne le vecteur soluction du système,
-%la valeur du système pour la soluction trouvé et le nombre d'itérations effectués.
-%La fonction retourne le x obtenu pendant l'exécution de l'algorithme même sans être le optimal, car il y a possibilité d'échecs.
-%Il faut considerer que a chaque itération il y a la construction d'une solution en essayant obtenir la solution optimale, alors
-%chaque itération retourne une soluction faisable.
+%La fonction reçoit comme paramètres le système à résoudre, le x initial et la tolérance.Retourne le vecteur solution du système,
+%la valeur du système pour la solution trouvée et le nombre d'itérations effectués.
+%La fonction retourne le x obtenu pendant l'exécution de l'algorithme même sans être optimal, car il y a possibilité d'échecs.
+%Il faut considerer qu' à chaque itération il y a la construction d'une solution en essayant obtenir la solution optimale, alors
+%chaque itération retourne une solution réalisable.
 %
 %ARGUMENTS:
 %fct	fonction (système) sur laquelle s'applique le méthode
