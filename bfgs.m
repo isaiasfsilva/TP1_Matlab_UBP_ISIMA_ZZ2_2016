@@ -119,16 +119,19 @@ while(norm(gK) > eps && k<itr)
 %
 %Calcul du Hessien approché sur la contrainte que les solutions sont différents. C'est à dire, on peut améliorer la solution
 %en recherchant la solution optimale
+%
 %Le calcul du Hessien est donné pour une formule obtenue dans toutes les documents que traitent du méthode BFGS
 	if((deltK'*gamK)>0)
 	        %error('ÉCHEC! LA MATRIX NE PEUT ETRE CALCULEE. IL Y A EU UNE DIVISION PAR ZERO.       ABORTING      ');
                 H = H - (1/(deltK'*gamK))*(deltK*gamK'*H + H*gamK*deltK') + (1 + (gamK'*H*gamK)/(deltK'*gamK)) * ((deltK*deltK')/(deltK' * gamK));
 	end %if calcul du Hessien pour nouvelles solutions
-	
+%Pour mantenir la cohésion avec le mèthode BFGS on doit assurer que la construction du Hessien est faite dans le limit de la
+%la taille du vecteur. Si le nombre d'itêrations est supérieur à la taille du vecteur x, alors il faut reinitialiser
+%
 	if(mod(k,n)==0)
 	        H=eye(n);
 	end
-
+%
 %Vérification des specifications d'affichage pour la première itération dans le cas du paramètre iprint égal a 1
 %Si l'algorithme est dans la première itération et comme il y a besoin d'affichage des valeurs du gradient et de la solution
 % alors cettes valeurs sont affichées
@@ -153,7 +156,7 @@ while(norm(gK) > eps && k<itr)
 %Attribution du gradient de la nouvelle solution a la variable correct car gNext est une variable temporaire
 	gK=gNextK;
 end %fin du boucle while
-
+%
 %Vérification des specifications d'affichage pour la dernière itération dans le cas du paramètre iprint égal a 1
 %Comme l'algorithme est dans la dernière itération et comme il y a besoin d'affichage des valeurs du gradient et de la solution
 % alors cettes valeurs sont affichées  
@@ -161,10 +164,10 @@ if(iprint==1)
 	   fprintf('\n\n#### Value de Gradient (gK) et X  ####\n#           Dérniére Iteration          #\n#####################################\n');
 	   gK
 	   xK
-	     
+%	     
 end %fin de la vérification du paramètre d'affichage iprint == 1
 %
 %
-end % fin de la fonction
+end; % fin de la fonction
         
         
