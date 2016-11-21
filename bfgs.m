@@ -117,15 +117,15 @@ while(norm(gK) > eps && k<itr)
 %Différence entre les gradients de la nouvelle solution et de la solution actuelle
 	gamK=gNextK - gK;
 
-%Verifier si est possible calculer le matrisse H
-	if((deltK'*gamK)<=0)            
-	   disp('ÉCHEC! PAS POSSIBLE CALCULER H.      ABORTING       ')
-           return 
-	end %if calcul du Hessien pour nouvelles solutions
 %Calcul du Hessien approché sur la contrainte que les solutions sont différents. C'est à dire, on peut améliorer la solution
 %en recherchant la solution optimale
 %Le calcul du Hessien est donné pour une formule obtenue dans toutes les documents que traitent du méthode BFGS
-	H = H - (1/(deltK'*gamK))*(deltK*gamK'*H + H*gamK*deltK') + (1 + (gamK'*H*gamK)/(deltK'*gamK)) * ((deltK*deltK')/(deltK' * gamK));
+%Verifier si est possible calculer le matrisse H
+	if((deltK'*gamK)>0)            
+        	H = H - (1/(deltK'*gamK))*(deltK*gamK'*H + H*gamK*deltK') + (1 + (gamK'*H*gamK)/(deltK'*gamK)) * ((deltK*deltK')/(deltK' * gamK));
+	end %if calcul du Hessien pour nouvelles solutions
+
+	
 %
 %Updqte course 21/11/16
 	if(mod(k,n)==0)
